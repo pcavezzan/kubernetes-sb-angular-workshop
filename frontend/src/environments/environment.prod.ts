@@ -5,6 +5,10 @@ export const environment = {
   apiUrl: '/api',
   version: npm.version,
   config: {
-    env: 'prod'
+    env: 'prod',
+    poll: {
+      active: true,
+      timeInMillis: 5000,
+    }
   }
 };

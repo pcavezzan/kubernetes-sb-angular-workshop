@@ -1,0 +1,4 @@
+<div class="wrapper">
+  <ng-terminal *ngIf="displayTerm" class="wrapper-terminal" #term></ng-terminal>
+  <span class="message" *ngIf="!displayTerm">{{ (message$ | async)?.payload }}</span>
+</div>

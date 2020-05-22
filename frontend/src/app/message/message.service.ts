@@ -11,19 +11,31 @@ export class MessageService {
   constructor(private httpService: HttpService) {
   }
 
-  getMessage(): Observable<Message> {
+  getFrontPageMessage(): Observable<Message> {
     return zip(
       this.httpService.get<Message>('/welcome'),
       this.httpService.get<Message>('/whoami')
     ).pipe(
       map(values => {
-        const welcomeMsg = values[0].payload;
-        const whoamiMsg = values[1].payload;
+        let msg: string;
+        const welcomeMsg = values[0];
+        const whoamiMsg = values[1];
+
+        if (welcomeMsg.error && whoamiMsg.error) {
+          msg = `backend server error status: ${welcomeMsg.error.status}`;
+        } else {
+          msg = welcomeMsg.payload + ' from ' + whoamiMsg.payload;
+        }
+
         return {
-          payload: welcomeMsg + ' - ' + whoamiMsg
+          payload: msg
         };
       })
     );
+  }
+
+  getInfoMessage(): Observable<Message> {
+    return this.httpService.get<Message>('/info');
   }
 
 }

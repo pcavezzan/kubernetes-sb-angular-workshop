@@ -8,7 +8,11 @@ export const environment = {
   apiUrl: '/api',
   version: npm.version,
   config: {
-    env: 'local'
+    env: 'local',
+    curl: {
+      active: false,
+      timeInMillis: 5000,
+    }
   }
 };
 

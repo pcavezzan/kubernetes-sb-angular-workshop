@@ -1,0 +1,14 @@
+.wrapper {
+  margin: auto;
+  text-align: center;
+}
+
+.ng-terminal {
+  display: block;
+  height: 50vh;
+}
+
+.message {
+  font-size: large;
+
+}

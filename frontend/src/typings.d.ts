@@ -1,3 +1,9 @@
 interface Message {
-  payload: string
+  payload: string;
+  error?: HttpClientError;
+}
+
+interface HttpClientError {
+  requestedUrl: string;
+  status: number;
 }
