@@ -6,7 +6,7 @@ import { cold } from 'jasmine-marbles';
 describe('MessageComponent', () => {
   let messageServiceSpy: jasmine.SpyObj<MessageService>;
   beforeEach(async(() => {
-    messageServiceSpy = jasmine.createSpyObj('MessageService', ['getMessage']);
+    messageServiceSpy = jasmine.createSpyObj('MessageService', ['getFrontPageMessage', 'getInfoMessage']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -32,17 +32,17 @@ describe('MessageComponent', () => {
 
     component.ngOnInit();
 
-    expect(messageServiceSpy.getMessage).toHaveBeenCalled();
+    expect(messageServiceSpy.getFrontPageMessage).toHaveBeenCalled();
   });
 
   it('should have value observable', () => {
-    messageServiceSpy.getMessage.and.callFake(() => cold('-m-', {m: 'Hello World'}));
+    messageServiceSpy.getFrontPageMessage.and.callFake(() => cold('-m-', {m: 'Hello World'}));
     const fixture = TestBed.createComponent(MessageComponent);
     const component = fixture.componentInstance;
 
     component.ngOnInit();
 
-    expect(component.value$).toBeObservable(cold('-m-', {m: 'Hello World'}));
+    expect(component.message$).toBeObservable(cold('-m-', {m: 'Hello World'}));
   });
 
 });

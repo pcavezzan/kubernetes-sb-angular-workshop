@@ -11,24 +11,36 @@ describe('MessageService', () => {
     messageService = new MessageService(httpServiceSpy);
   });
 
-  it('getMessage should call get /welcome', () => {
-    messageService.getMessage();
+  it('getFrontPageMessage should call get /welcome', () => {
+    messageService.getFrontPageMessage();
 
     expect(httpServiceSpy.get).toHaveBeenCalledWith('/welcome');
   });
 
-  it('getMessage should call get /whoami', () => {
-    messageService.getMessage();
+  it('getFrontPageMessage should call get /whoami', () => {
+    messageService.getFrontPageMessage();
 
     expect(httpServiceSpy.get).toHaveBeenCalledWith('/whoami');
   });
 
 
-  it(`getMessage should return Observable<Message>`, () => {
+  it(`getFrontPageMessage should return Observable<Message>`, () => {
     httpServiceSpy.get.withArgs('/welcome').and.returnValue(cold('-m-', {m: {payload: 'Hello World'}}));
     httpServiceSpy.get.withArgs('/whoami').and.returnValue(cold('-m-', {m: {payload: 'localhost'}}));
 
-    expect(messageService.getMessage()).toBeObservable(cold('-m-', {m: {payload: 'Hello World - localhost'}}));
+    expect(messageService.getFrontPageMessage()).toBeObservable(cold('-m-', {m: {payload: 'Hello World from localhost'}}));
+  });
+
+  it('getInfoMessage should call get /info', () => {
+    messageService.getInfoMessage();
+
+    expect(httpServiceSpy.get).toHaveBeenCalledWith('/info');
+  });
+
+  it(`getInfoMessage should return Observable<Message>`, () => {
+    httpServiceSpy.get.withArgs('/info').and.returnValue(cold('-m-', {m: {payload: 'Running v1 from localhost'}}));
+
+    expect(messageService.getInfoMessage()).toBeObservable(cold('-m-', {m: {payload: 'Running v1 from localhost'}}));
   });
 
 });

@@ -6,19 +6,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import java.net.InetAddress;
-
 @RestController
 @RequestMapping("/welcome")
 @Slf4j
 class WelcomeResource {
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
+    private final String serverHostName;
 
     @Autowired
-    private String serverHostName;
+    public WelcomeResource(MessageService messageService, String serverHostName) {
+        this.messageService = messageService;
+        this.serverHostName = serverHostName;
+    }
 
     @GetMapping
     public Message get() {

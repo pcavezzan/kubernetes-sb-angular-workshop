@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: sb-angular-frontend
+  labels:
+    app: sb-angular-frontend
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+spec:
+  rules:
+    - host: sb-angular.apps.codeinlove.fr
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sb-angular-frontend
+              servicePort: http

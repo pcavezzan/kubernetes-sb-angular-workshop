@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: sb-angular-backend
+  labels:
+    app: sb-angular-backend
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: sb-angular.apps.codeinlove.fr
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            backend:
+              serviceName: sb-angular-backend
+              servicePort: http

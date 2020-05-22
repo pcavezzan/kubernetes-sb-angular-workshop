@@ -23,4 +23,17 @@ class MessageServiceITCase {
         final Message serverHostName = messageService.getServerHostName();
         assertThat(serverHostName).isEqualTo(new Message("localhost"));
     }
+
+    @Test
+    void getBuildInfoShouldReturnVersionLatestInDev() {
+        final Message serverHostName = messageService.getBuildInfo();
+        assertThat(serverHostName).isEqualTo(new Message("vTest"));
+    }
+
+    @Test
+    void getInfoShouldReturnInfoMessage() {
+        final Message serverHostName = messageService.getInfo();
+        assertThat(serverHostName).isEqualTo(new Message("vTest running on localhost"));
+    }
+
 }

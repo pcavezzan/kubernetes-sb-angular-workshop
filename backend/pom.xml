@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.pcavezzan.kubernetes.workshop</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Spring Boot Angular - Backend</name>
 	<description>Backend JAVA for this small project Spring Boot Angular to deploy on Kubernetes</description>
 
@@ -22,6 +22,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -42,6 +46,26 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<finalName>backend</finalName>
+					</configuration>
+					<executions>
+						<execution>
+							<id>generate-build-info</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>build-info</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

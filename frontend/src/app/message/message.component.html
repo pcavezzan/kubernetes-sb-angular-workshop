@@ -1,0 +1,11 @@
+<div class="wrapper">
+  <h2 class="message">
+    {{ (message$ | async)?.payload }}
+  </h2>
+
+  <pre *ngIf="!displayTerm" class="message">
+    {{ (info$ | async)?.payload }}
+  </pre>
+  <ng-terminal *ngIf="displayTerm" class="wrapper-terminal" #term></ng-terminal>
+
+</div>

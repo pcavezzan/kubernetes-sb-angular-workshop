@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sb-angular-backend
+  labels:
+    app: sb-angular-backend
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+spec:
+  selector:
+    matchLabels:
+      app: sb-angular-backend
+      project: sb-angular
+  template:
+    metadata:
+      labels:
+        app: sb-angular-backend
+        project: sb-angular
+      annotations:
+        author: "Patrice CAVEZZAN"
+        email: "pcavezzan@gmail.com"
+    spec:
+      imagePullSecrets:
+        - name: pcavezzan.azurecr.io
+      containers:
+        - name: main
+          image: pcavezzan.azurecr.io/pcavezzan/sb-angular-backend:v1.0.0
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 400m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
