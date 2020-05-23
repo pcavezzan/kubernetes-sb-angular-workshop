@@ -6,7 +6,7 @@ export const environment = {
   version: npm.version,
   config: {
     env: 'prod',
-    poll: {
+    curl: {
       active: true,
       timeInMillis: 5000,
     }

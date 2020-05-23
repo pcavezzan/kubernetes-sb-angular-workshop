@@ -1,5 +1,9 @@
 {
   "config": {
-    "env": "dev"
+    "env": "dev",
+    "curl": {
+      "active": false,
+      "timeInMillis": 5000
+    }
   }
 }

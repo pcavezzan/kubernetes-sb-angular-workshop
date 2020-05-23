@@ -2,9 +2,11 @@
   "name": "frontend",
   "version": "0.0.1-SNAPSHOT",
   "scripts": {
+    "clean": "rimraf dist/",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
+    "build:dev": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -43,6 +45,7 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3",
-    "jasmine-marbles": "~0.6.0"
+    "jasmine-marbles": "~0.6.0",
+    "rimraf": "~3.0.2"
   }
 }
