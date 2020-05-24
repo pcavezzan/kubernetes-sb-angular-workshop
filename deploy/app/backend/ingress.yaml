@@ -1,5 +1,6 @@
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: sb-angular-backend
   labels:
@@ -8,13 +9,29 @@ metadata:
   annotations:
     author: "Patrice CAVEZZAN"
     email: "pcavezzan@gmail.com"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  rules:
-    - host: sb-angular.apps.codinglove.fr
-      http:
-        paths:
-          - path: /api(/|$)(.*)
-            backend:
-              serviceName: sb-angular-backend
-              servicePort: http
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`sb-angular.apps.codinglove.fr`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: sb-angular-backend
+          port: 80
+      middlewares:
+        - name: api-stripprefix
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: api-stripprefix
+  labels:
+    app: sb-angular-backend
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+spec:
+  stripPrefix:
+    prefixes:
+      - /api
