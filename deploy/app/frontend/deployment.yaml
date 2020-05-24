@@ -24,6 +24,29 @@ spec:
     spec:
       imagePullSecrets:
         - name: pcavezzan.azurecr.io
+      initContainers:
+        - name: create-custom-config
+          image: busybox:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              cat << EOF > /etc/app/environment.json
+              {
+                "config": {
+                  "env": "kubernetes",
+                  "curl": {
+                    "active": true,
+                    "timeInMillis": 5000
+                  }
+                }
+              }
+              EOF
+              sleep 10
+              exit 0
+          volumeMounts:
+            - mountPath: /etc/app
+              name: frontend-config
       containers:
         - name: main
           image: pcavezzan.azurecr.io/pcavezzan/sb-angular-frontend:v1.0.0
@@ -57,3 +80,11 @@ spec:
               port: http
             periodSeconds: 30
             timeoutSeconds: 3
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/assets/environment.json
+              subPath: environment.json
+              name: frontend-config
+
+      volumes:
+        - name: frontend-config
+          emptyDir: {}
