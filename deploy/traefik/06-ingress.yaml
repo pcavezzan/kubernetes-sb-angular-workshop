@@ -1,0 +1,16 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: traefik-ingress-controller-admin
+  namespace: traefik-ingress
+  labels:
+    app: traefik
+spec:
+  rules:
+    - host: traefik.apps.codinglove.fr
+      http:
+        paths:
+          - backend:
+              serviceName: traefik-ingress-controller-admin
+              servicePort: admin
