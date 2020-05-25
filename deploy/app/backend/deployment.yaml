@@ -33,6 +33,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: sb-angular-backend-config-env
+          env:
+            - name: BACKEND_MESSAGES_WELCOME
+              valueFrom:
+                secretKeyRef:
+                  name: sb-angular-backend-secrets
+                  key: backend.messages.welcome
           resources:
             requests:
               cpu: 200m
