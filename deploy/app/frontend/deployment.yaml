@@ -24,36 +24,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: pcavezzan.azurecr.io
-      initContainers:
-        - name: create-custom-config
-          image: busybox:latest
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              #!/bin/sh
-              if [ -f /etc/app/environment.json ]; then
-                echo "Config file already configured"
-              else
-                echo "Directory is empty, initializing frontend config"
-                cat << EOF > /etc/app/environment.json
-                {
-                  "config": {
-                    "env": "kubernetes",
-                    "curl": {
-                      "active": true,
-                      "timeInMillis": 5000
-                    }
-                  }
-                }
-              EOF
-                sleep 10
-              fi
-
-              exit 0
-          volumeMounts:
-            - mountPath: /etc/app
-              name: frontend-config
       containers:
         - name: main
           image: pcavezzan.azurecr.io/pcavezzan/sb-angular-frontend:v1.0.0
@@ -91,8 +61,7 @@ spec:
             - mountPath: /usr/share/nginx/html/assets/environment.json
               subPath: environment.json
               name: frontend-config
-
       volumes:
         - name: frontend-config
-          persistentVolumeClaim:
-            claimName: sb-angular-frontend-config-pvc
+          configMap:
+            name: sb-angular-frontend-config

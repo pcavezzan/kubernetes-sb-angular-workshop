@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sb-angular-backend-config-env
+  labels:
+    app: sb-angular-backend
+    project: sb-angular
+data:
+  SPRING_APPLICATION_NAME: sb-angular-backend-configmap
