@@ -30,6 +30,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "sb-angular-backend"
           resources:
             requests:
               cpu: 200m
