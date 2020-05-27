@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sb-angular-store
+  labels:
+    app: sb-angular-store
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+spec:
+  selector:
+    app: sb-angular-store
+    project: sb-angular
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
