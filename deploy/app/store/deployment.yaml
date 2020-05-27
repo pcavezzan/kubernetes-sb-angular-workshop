@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sb-angular-store
+  labels:
+    app: sb-angular-store
+    project: sb-angular
+  annotations:
+    author: "Patrice CAVEZZAN"
+    email: "pcavezzan@gmail.com"
+spec:
+  selector:
+    matchLabels:
+      app: sb-angular-store
+      project: sb-angular
+  template:
+    metadata:
+      labels:
+        app: sb-angular-store
+        project: sb-angular
+      annotations:
+        author: "Patrice CAVEZZAN"
+        email: "pcavezzan@gmail.com"
+    spec:
+      imagePullSecrets:
+        - name: pcavezzan.azurecr.io
+      containers:
+        - name: main
+          image: pcavezzan.azurecr.io/pcavezzan/sb-angular-store:v1.0.0
+          ports:
+            - containerPort: 9090
+              name: http
+          volumeMounts:
+            - mountPath: /app/data
+              name: store-data-dir
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /ping
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /ping
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        - name: store-data-dir
+          persistentVolumeClaim:
+            claimName: sb-angular-store-data
