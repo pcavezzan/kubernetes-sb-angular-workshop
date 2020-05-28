@@ -1,6 +1,7 @@
 MODULE			= $(shell env $(GO) list -m)
 PROJECTNAME 	= store
 BIN 			= ./bin
+COVERAGE		= ./coverage
 
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
@@ -19,8 +20,21 @@ help: Makefile
 $(BIN):
 	@mkdir -p $@
 
-clean: ## Remove
-	@rm -rf $(BIN)
+clean:  ## Remove
+	go clean -i ./...
+	rm -rf $(BIN) $(COVERAGE)
 
 build:	## Build the application locally
 	go build ${LDFLAGS} -o $(BIN)/${PROJECTNAME}
+
+test:	## Run all tests
+	go test ./... -v
+
+coverage:		## Run test coverage and generate html report
+	@mkdir -p coverage
+	@go list -f '{{if gt (len .TestGoFiles) 0}}"go test -covermode count -coverprofile {{.Name}}.coverprofile -coverpkg ./... {{.ImportPath}}"{{end}}' ./... | xargs -I {} bash -c {}
+	@echo "mode: count" > $(COVERAGE)/cover.out
+	@grep -h -v "^mode:" *.coverprofile >> "$(COVERAGE)/cover.out"
+	@rm *.coverprofile
+	@go tool cover -html=$(COVERAGE)/cover.out -o=$(COVERAGE)/cover.html
+

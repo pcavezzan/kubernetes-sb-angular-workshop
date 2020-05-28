@@ -3,14 +3,44 @@ package main
 import (
 	"fmt"
 	"github.com/dgraph-io/badger/v2"
-	"github.com/gin-gonic/gin"
-	"github.com/pcavezzan/kubernetes/workshop/store/persistence"
-	"github.com/pcavezzan/kubernetes/workshop/store/web"
+	"github.com/go-resty/resty/v2"
+	"github.com/pcavezzan/kubernetes/workshop/store/clustering"
+	"github.com/pcavezzan/kubernetes/workshop/store/gin"
+	"github.com/pcavezzan/kubernetes/workshop/store/messages"
+	"github.com/spf13/pflag"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
+	enableClustering := pflag.Bool("enableClustering", false, "Enable cluster behavior")
+	clusterMembers := pflag.String("clusterMembers", "", "Identifier of all members in cluster (eg: member-1:9090,member-2:8080)")
+	currentId := pflag.String("id", "", "Identifier of the actual member in cluster")
+
+	pflag.Parse()
+
+	log.Println("currentId: " + *currentId)
+	log.Println("clusterMembers: " + *clusterMembers)
+
+	var topology *clustering.Topology
+	if *enableClustering {
+		if *clusterMembers != "" {
+			memberIds := strings.Split(*clusterMembers, ",")
+			var members []clustering.Member
+			for _, memberId := range memberIds {
+				if memberId != *currentId {
+					url := "http://" + memberId
+					log.Printf("memberImpl about to be created with: %s", url)
+
+					client := resty.New().SetHostURL(url)
+					members = append(members, clustering.NewMemberImpl(memberId, client))
+				}
+			}
+			topology = &clustering.Topology{Current: *currentId, Members: members}
+		}
+	}
+
 	dataDir := os.Getenv("STORE_DATA_PATH")
 	if dataDir == "" {
 		dataDir = "/tmp/badger"
@@ -21,19 +51,13 @@ func main() {
 	}
 	defer db.Close()
 
-	store := persistence.Store{Db: db}
-	messageEndPoint := web.MessageEndPoint{Store: &store}
-	pingEndPoint := web.HealthEndPoint{}
+	store := messages.NewBadgerStore(db)
 
-	r := gin.Default()
-	r.GET("/messages/:key", messageEndPoint.Get)
-	r.PUT("/messages/:key", messageEndPoint.Put)
-	r.GET("/ping", pingEndPoint.Ping)
+	r := gin.NewMainRouter(store, topology)
 
 	serverPort := os.Getenv("STORE_SERVER_PORT")
 	if serverPort == "" {
 		serverPort = "9090"
 	}
-
 	r.Run(fmt.Sprintf(":%s", serverPort)) // listen and serve on 0.0.0.0:8080
 }
