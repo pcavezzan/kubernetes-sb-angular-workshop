@@ -1,5 +1,8 @@
-package com.github.pcavezzan.kubernetes.workshop;
+package com.github.pcavezzan.kubernetes.workshop.infrastructure.api.endpoints;
 
+
+import com.github.pcavezzan.kubernetes.workshop.infrastructure.api.resources.MessageResource;
+import com.github.pcavezzan.kubernetes.workshop.infrastructure.api.services.MessageResourceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,23 +16,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(InfoResource.class)
-public class InfoResourceTestCase {
-
+@WebMvcTest(WhoamiRestController.class)
+public class WhoamiRestControllerTestCase extends AbstractRestControllerTestCase {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private MessageService service;
+    private MessageResourceService service;
 
     @Test
-    public void getShouldReturnAppInfo() throws Exception {
-        when(service.getInfo()).thenReturn(new Message("running v1 on 2020-05-15"));
+    public void getShouldReturnHelloWorld() throws Exception {
+        when(service.getWhoami()).thenReturn(new MessageResource( "localhost"));
 
-        final ResultActions resultActions = this.mockMvc.perform(get("/info"));
+        final ResultActions resultActions = this.mockMvc.perform(get("/whoami"));
 
         resultActions.andExpect(status().isOk())
-                .andExpect(content().string(equalTo("{\"payload\":\"running v1 on 2020-05-15\"}")));
+                .andExpect(content().string(equalTo("{\"payload\":\"localhost\"}")));
     }
 
 }

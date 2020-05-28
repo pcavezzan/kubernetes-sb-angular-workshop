@@ -1,11 +1,7 @@
-package com.github.pcavezzan.kubernetes.workshop;
+package com.github.pcavezzan.kubernetes.workshop.infrastructure.api.endpoints;
 
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -13,11 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class InfoResourceITCase {
-    @Autowired
-    private MockMvc mockMvc;
+public class InfoRestControllerITCase extends AbstractRestControllerITCase {
 
     @Test
     public void getShouldReturnHelloWorld() throws Exception {
