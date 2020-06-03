@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "stores", url = "${backend.messages.store.url}")
 public interface MessageStoreClient {
 
+    @GetMapping("/ping")
+    void ping();
+
     @GetMapping("/messages/{key}")
     Message get(@PathVariable("key") String key);
 

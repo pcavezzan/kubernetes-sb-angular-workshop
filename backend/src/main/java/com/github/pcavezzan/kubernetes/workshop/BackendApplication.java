@@ -4,6 +4,8 @@ import com.github.pcavezzan.kubernetes.workshop.domain.Message;
 import com.github.pcavezzan.kubernetes.workshop.domain.MessageRepository;
 import com.github.pcavezzan.kubernetes.workshop.domain.MessageService;
 import com.github.pcavezzan.kubernetes.workshop.infrastructure.api.services.MessageResourceService;
+import com.github.pcavezzan.kubernetes.workshop.infrastructure.kubernetes.MessageStoreVerifier;
+import com.github.pcavezzan.kubernetes.workshop.infrastructure.kubernetes.MessageStoreVerifierScheduledTask;
 import com.github.pcavezzan.kubernetes.workshop.infrastructure.repositories.MessageRepositoryFeignImpl;
 import com.github.pcavezzan.kubernetes.workshop.infrastructure.repositories.MessageStoreClient;
 import lombok.Data;
@@ -12,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,6 +31,7 @@ import java.util.Optional;
 @Slf4j
 @SpringBootApplication
 @EnableFeignClients
+@EnableScheduling
 @EnableConfigurationProperties(BackendApplication.BackendApplicationProperties.class)
 public class BackendApplication {
 
@@ -86,8 +92,16 @@ public class BackendApplication {
     }
 
     @Bean
-    public CommandLineRunner boostrapMessages(MessageRepository messageRepository, String serverHostName) {
+    @ConditionalOnProperty( name = "backend.messages.store.bootstrap", havingValue = "true")
+    public CommandLineRunner boostrapMessages( MessageStoreVerifier messageStoreVerifier,
+                                               MessageRepository messageRepository,
+                                               String serverHostName) {
         return args -> {
+            while (!messageStoreVerifier.verify()) {
+                log.warn("Remote storage is unavailable, waiting for 2secs until next check in order to setup initial messages.");
+                Thread.sleep(2000);
+            }
+
             String version = backendApplicationProperties.getVersion();
             if (buildProperties.isPresent()) {
                 final BuildProperties properties = buildProperties.get();
@@ -104,5 +118,17 @@ public class BackendApplication {
         };
     }
 
+    @Bean
+    public MessageStoreVerifier messageStoreVerifier(
+            MessageStoreClient messageStoreClient,
+            ApplicationEventPublisher eventPublisher
+    ) {
+        return new MessageStoreVerifier(messageStoreClient, eventPublisher);
+    }
+
+    @Bean
+    public MessageStoreVerifierScheduledTask messageStoreVerifierScheduledTask(MessageStoreVerifier messageStoreVerifier) {
+        return new MessageStoreVerifierScheduledTask(messageStoreVerifier);
+    }
 }
 
