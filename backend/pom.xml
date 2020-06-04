@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.pcavezzan.kubernetes.workshop</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Spring Boot Angular - Backend</name>
 	<description>Backend JAVA for this small project Spring Boot Angular to deploy on Kubernetes</description>
 
