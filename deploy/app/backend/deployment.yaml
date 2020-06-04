@@ -26,7 +26,7 @@ spec:
         - name: pcavezzan.azurecr.io
       containers:
         - name: main
-          image: pcavezzan.azurecr.io/pcavezzan/sb-angular-backend:v1.0.0
+          image: pcavezzan.azurecr.io/pcavezzan/sb-angular-backend:v2.0.0
           ports:
             - name: http
               containerPort: 8080
