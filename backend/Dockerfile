@@ -19,6 +19,7 @@ COPY --from=jre-build /javaruntime $JAVA_HOME
 RUN useradd -m -d /home/app app
 USER app
 WORKDIR /home/app
+ENV JDK_JAVA_OPTIONS ""
 EXPOSE 8080
-COPY --chown=app target/backend.jar backend.jar
+COPY --chown=app:app target/backend.jar backend.jar
 ENTRYPOINT [ "java", "-jar", "backend.jar" ]
