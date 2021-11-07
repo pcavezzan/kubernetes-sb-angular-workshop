@@ -1,10 +1,14 @@
-import * as npm from '../../package.json';
+import npm from '../../package.json';
 
 export const environment = {
   production: true,
   apiUrl: '/api',
   version: npm.version,
   config: {
-    env: 'prod'
+    env: 'prod',
+    curl: {
+      active: true,
+      timeInMillis: 5000,
+    }
   }
 };
