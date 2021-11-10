@@ -37,17 +37,23 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
+          startupProbe:
+            httpGet:
+              path: /assets/status.json
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 10
           livenessProbe:
             httpGet:
               path: /assets/status.json
               port: http
-            initialDelaySeconds: 10
             periodSeconds: 30
             timeoutSeconds: 3
           readinessProbe:
             httpGet:
               path: /assets/status.json
               port: http
-            initialDelaySeconds: 10
             periodSeconds: 30
             timeoutSeconds: 3
